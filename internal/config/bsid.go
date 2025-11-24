@@ -6,7 +6,6 @@
 package config
 
 import (
-	"fmt"
 	"net"
 	"strings"
 )
@@ -17,7 +16,7 @@ type Bsid struct {
 }
 
 func (a *Bsid) ToIPRoute2() string {
-	return fmt.Sprintf(strings.Join(a.SegmentsList[:], ","))
+	return strings.Join(a.SegmentsList[:], ",")
 }
 
 func (a *Bsid) ReverseSegmentsList() []net.IP {
