@@ -5,6 +5,9 @@ max_line_length = 140
 [sqlfluff:rules:references.special_chars]
 ignore_words = uuid-ossp
 
+[sqlfluff:rules:references.keywords]
+ignore_words = uuid
+
 [sqlfluff:convention.terminator]
 require_final_semicolor = True
 
