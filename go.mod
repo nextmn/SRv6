@@ -1,6 +1,6 @@
 module github.com/nextmn/srv6
 
-go 1.25.4
+go 1.25.5
 
 require (
 	github.com/adrg/xdg v0.5.3
@@ -12,7 +12,7 @@ require (
 	github.com/nextmn/gopacket-srv6 v0.0.8
 	github.com/nextmn/json-api v0.0.19
 	github.com/nextmn/logrus-formatter v0.0.1
-	github.com/nextmn/rfc9433 v0.0.2
+	github.com/nextmn/rfc9433 v0.0.3
 	github.com/sirupsen/logrus v1.9.3
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 	github.com/urfave/cli/v2 v2.27.7

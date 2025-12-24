@@ -66,8 +66,8 @@ github.com/nextmn/json-api v0.0.19 h1:1qG15CXIuHb1jvIOihRYQpSAR4qKvLc99ls4OInnN5
 github.com/nextmn/json-api v0.0.19/go.mod h1:CQXeNPj9MDGsEExtnqJFIGjLgZAKsmOoO2fy+mep7Ak=
 github.com/nextmn/logrus-formatter v0.0.1 h1:Bsf78jjiEESc+rV8xE6IyKj4frDPGMwXFNrLQzm6A1E=
 github.com/nextmn/logrus-formatter v0.0.1/go.mod h1:vdSZ+sIcSna8vjbXkSFxsnsKHqRwaUEed4JCPcXoGyM=
-github.com/nextmn/rfc9433 v0.0.2 h1:6FjMY+Qy8MNXQ0PPxezUsyXDxJiCbTp5j3OcXQgIQh8=
-github.com/nextmn/rfc9433 v0.0.2/go.mod h1:uVEEXunVOe3dMDV8eHr8ViPT/RnJ5WxjeQhycgaqFh4=
+github.com/nextmn/rfc9433 v0.0.3 h1:FBMlfI+KzWbleBQ5uOKlisxrBZxhF5XWGrouQk2+PSc=
+github.com/nextmn/rfc9433 v0.0.3/go.mod h1:jkclhYVhULUlTESb3eLYpquUUzazXEwK2C3dKmBgV9g=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
 github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
