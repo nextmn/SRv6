@@ -9,6 +9,7 @@ IPROUTE2_RTTABLES_D = /etc/iproute2/rt_tables.d
 RM = rm -f
 INSTALL = install -D
 MAKE = make --no-print-directory
+MKDIRP = mkdir -p
 
 .PHONY: install uninstall update build clean default
 default: build
@@ -23,10 +24,11 @@ install:
 	$(INSTALL) srv6 $(DESTDIR)$(bindir)/srv6
 	$(INSTALL) etc/iproute2/rt_protos.d/nextmn.conf $(DESTDIR)$(IPROUTE2_RTPROTOS_D)/nextmn.conf
 	$(INSTALL) etc/iproute2/rt_tables.d/nextmn.conf $(DESTDIR)$(IPROUTE2_RTTABLES_D)/nextmn.conf
-	$(INSTALL) bash-completion/completions/srv6 $(DESTDIR)$(BASHCOMPLETIONSDIR)/srv6
+	$(MKDIRP) $(DESTDIR)$(BASHCOMPLETIONSDIR)
+	$(DESTDIR)$(bindir)/srv6 completion bash > $(DESTDIR)$(BASHCOMPLETIONSDIR)/srv6
 	@echo "================================="
 	@echo ">> Now run the following command:"
-	@echo -e "\tsource $(DESTDIR)$(BASHCOMPLETIONSDIR)/srv6"
+	@echo "\tsource $(DESTDIR)$(BASHCOMPLETIONSDIR)/srv6"
 	@echo "================================="
 uninstall:
 	$(RM) $(DESTDIR)$(bindir)/srv6
