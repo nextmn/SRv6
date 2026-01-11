@@ -6,8 +6,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"net/netip"
+	"os"
 	"path/filepath"
 
 	"github.com/nextmn/json-api/jsonapi"
@@ -21,7 +21,7 @@ func ParseConf(file string) (*SRv6Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	yamlFile, err := ioutil.ReadFile(path)
+	yamlFile, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

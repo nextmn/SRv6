@@ -7,7 +7,7 @@ package iproute2
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 
@@ -71,7 +71,7 @@ func (t *TunIface) MTU() (int64, error) {
 		return 0, fmt.Errorf("interface name contains illegal character")
 	}
 	filename := fmt.Sprintf("/sys/class/net/%s/mtu", t.iface.Name())
-	content, err := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
 	if err != nil {
 		return 0, err
 	}
@@ -84,7 +84,7 @@ func (t *TunIface) IPv6HopLimit() (uint8, error) {
 		return 0, fmt.Errorf("interface name contains illegal character")
 	}
 	filename := fmt.Sprintf("/proc/sys/net/ipv6/conf/%s/hop_limit", t.iface.Name())
-	content, err := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
 	if err != nil {
 		return 0, err
 	}
@@ -98,7 +98,7 @@ func (t *TunIface) IPv6HopLimit() (uint8, error) {
 // IPv4 default TTL
 func (t *TunIface) IPv4TTL() (uint8, error) {
 	filename := "/proc/sys/net/ipv4/ip_default_ttl"
-	content, err := ioutil.ReadFile(filename)
+	content, err := os.ReadFile(filename)
 	if err != nil {
 		return 0, err
 	}
