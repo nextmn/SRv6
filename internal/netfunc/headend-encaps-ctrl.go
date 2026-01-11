@@ -46,13 +46,13 @@ func (h HeadendEncapsWithCtrl) Handle(ctx context.Context, packet []byte) ([]byt
 		return nil, err
 	}
 	if action.SourceGtp4 == nil {
-		return nil, fmt.Errorf("Empty SourceGtp4 for downlink Action")
+		return nil, fmt.Errorf("empty SourceGtp4 for downlink Action")
 	}
 	srgw_gtp_ip := *action.SourceGtp4
 	ipv6Src := encoding.NewMGTP4IPv6Src(h.srcPrefix, srgw_gtp_ip.As4(), 2152) // FIXME:dont hardcode udp port number to 2152
 	src, err := ipv6Src.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("Error during serialization of IPv6 SA: %w", err)
+		return nil, fmt.Errorf("error during serialization of IPv6 SA: %w", err)
 	}
 
 	segs := action.SRH.AsSlice()

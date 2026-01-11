@@ -23,7 +23,7 @@ func NewHeadendWithCtrl(he *config.Headend, ttl uint8, hopLimit uint8, setup_reg
 	case config.H_Encaps:
 		db, ok := setup_registry.DB()
 		if !ok {
-			return nil, fmt.Errorf("No database in the registry")
+			return nil, fmt.Errorf("no database in the registry")
 		}
 		srcAddressPrefix, err := netip.ParsePrefix(*he.SourceAddressPrefix)
 		if err != nil {
@@ -33,7 +33,7 @@ func NewHeadendWithCtrl(he *config.Headend, ttl uint8, hopLimit uint8, setup_reg
 	case config.H_M_GTP4_D:
 		db, ok := setup_registry.DB()
 		if !ok {
-			return nil, fmt.Errorf("No database in the registry")
+			return nil, fmt.Errorf("no database in the registry")
 		}
 		srcAddressPrefix, err := netip.ParsePrefix(*he.SourceAddressPrefix)
 		if err != nil {
@@ -46,6 +46,6 @@ func NewHeadendWithCtrl(he *config.Headend, ttl uint8, hopLimit uint8, setup_reg
 		}
 		return NewNetFunc(g), nil
 	default:
-		return nil, fmt.Errorf("Unsupported headend behavior (%s) with this provider (%s)", he.Behavior, he.Provider)
+		return nil, fmt.Errorf("unsupported headend behavior (%s) with this provider (%s)", he.Behavior, he.Provider)
 	}
 }

@@ -76,10 +76,10 @@ func (t *ControllerRegistryTask) RunInit(ctx context.Context) error {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 400 {
-		return fmt.Errorf("HTTP Bad request\n")
+		return fmt.Errorf("http bad request")
 	}
 	if resp.StatusCode >= 500 {
-		return fmt.Errorf("HTTP Control Server: internal error\n")
+		return fmt.Errorf("http control server: internal error")
 	}
 	if resp.StatusCode == 201 { // created
 		t.ControllerRegistry.Resource = resp.Header.Get("Location")
@@ -114,10 +114,10 @@ func (t *ControllerRegistryTask) RunExit() error {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 400 {
-		return fmt.Errorf("HTTP Bad request\n")
+		return fmt.Errorf("http bad request")
 	}
 	if resp.StatusCode >= 500 {
-		return fmt.Errorf("HTTP Control Server: internal error %v\n", resp.Body)
+		return fmt.Errorf("http control server: internal error %v", resp.Body)
 	}
 	t.state = false
 	return nil

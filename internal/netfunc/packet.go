@@ -34,7 +34,7 @@ func networkLayerType(packet []byte) (*gopacket.LayerType, error) {
 	case 6:
 		return &layers.LayerTypeIPv6, nil
 	default:
-		return nil, fmt.Errorf("Malformed packet")
+		return nil, fmt.Errorf("malformed packet")
 
 	}
 }
@@ -43,7 +43,7 @@ func NewIPv6Packet(packet []byte) (*Packet, error) {
 	if layerType, err := networkLayerType(packet); err != nil {
 		return nil, err
 	} else if *layerType != layers.LayerTypeIPv6 {
-		return nil, fmt.Errorf("This handler can only receive IPv6 packets")
+		return nil, fmt.Errorf("this handler can only receive IPv6 packets")
 	}
 	return &Packet{
 		Packet:         gopacket.NewPacket(packet, layers.LayerTypeIPv6, gopacket.Default),
@@ -55,7 +55,7 @@ func NewIPv4Packet(packet []byte) (*Packet, error) {
 	if layerType, err := networkLayerType(packet); err != nil {
 		return nil, err
 	} else if *layerType != layers.LayerTypeIPv4 {
-		return nil, fmt.Errorf("This handler can only receive IPv4 packets")
+		return nil, fmt.Errorf("this handler can only receive IPv4 packets")
 	}
 	return &Packet{
 		Packet:         gopacket.NewPacket(packet, layers.LayerTypeIPv4, gopacket.Default),
@@ -69,11 +69,11 @@ func (p *Packet) CheckDAInPrefixRange(prefix netip.Prefix) (netip.Addr, error) {
 	dstSlice := p.NetworkLayer().NetworkFlow().Dst().Raw()
 	dst, ok := netip.AddrFromSlice(dstSlice)
 	if !ok {
-		return netip.Addr{}, fmt.Errorf("Malformed packet")
+		return netip.Addr{}, fmt.Errorf("malformed packet")
 	}
 	// check if in range
 	if !prefix.Contains(dst) {
-		return netip.Addr{}, fmt.Errorf("Destination address out of this handler’s range")
+		return netip.Addr{}, fmt.Errorf("destination address out of this handler’s range")
 	}
 	return dst, nil
 }
@@ -83,7 +83,7 @@ func (p *Packet) GetSrcAddr() (netip.Addr, error) {
 	srcSlice := p.NetworkLayer().NetworkFlow().Src().Raw()
 	src, ok := netip.AddrFromSlice(srcSlice)
 	if !ok {
-		return netip.Addr{}, fmt.Errorf("Malformed packet")
+		return netip.Addr{}, fmt.Errorf("malformed packet")
 	}
 	return src, nil
 }
@@ -93,7 +93,7 @@ func (p *Packet) DownlinkAction(ctx context.Context, db db_api.Downlink) (n4tosr
 	dstSlice := p.NetworkLayer().NetworkFlow().Dst().Raw()
 	dst, ok := netip.AddrFromSlice(dstSlice)
 	if !ok {
-		return n4tosrv6.Action{}, fmt.Errorf("Malformed packet")
+		return n4tosrv6.Action{}, fmt.Errorf("malformed packet")
 	}
 	return db.GetDownlinkAction(ctx, dst)
 }
@@ -101,29 +101,29 @@ func (p *Packet) DownlinkAction(ctx context.Context, db db_api.Downlink) (n4tosr
 // Returns the first gopacket.Layer after IPv6 header / extension headers
 func (p *Packet) PopIPv6Headers() (gopacket.Layer, error) {
 	if p.firstLayerType != layers.LayerTypeIPv6 {
-		return nil, fmt.Errorf("Not an IPv6 packet")
+		return nil, fmt.Errorf("not an IPv6 packet")
 	}
 	for _, l := range p.Layers()[1:] { // first layer is IPv6 header, we skip it
 		if !layers.LayerClassIPv6Extension.Contains(l.LayerType()) {
 			return l, nil
 		}
 	}
-	return nil, fmt.Errorf("Nothing else than IPv6 Headers in the packet")
+	return nil, fmt.Errorf("nothing else than IPv6 Headers in the packet")
 }
 
 // Returns the first gopacket.Layer after IPv4/UDP/GTPU headers
 func (p *Packet) PopGTP4Headers() (gopacket.Layer, error) {
 	if p.firstLayerType != layers.LayerTypeIPv4 {
-		return nil, fmt.Errorf("Not an IPv4 packet")
+		return nil, fmt.Errorf("not an IPv4 packet")
 	}
 	if len(p.Layers()) < 4 {
-		return nil, fmt.Errorf("Not a GTP4 packet: not enough layers")
+		return nil, fmt.Errorf("not a GTP4 packet: not enough layers")
 	}
 	if p.Layers()[1].LayerType() != layers.LayerTypeUDP {
-		return nil, fmt.Errorf("No UDP layer")
+		return nil, fmt.Errorf("no UDP layer")
 	}
 	if binary.BigEndian.Uint16(p.TransportLayer().TransportFlow().Dst().Raw()) != constants.GTPU_PORT_INT {
-		return nil, fmt.Errorf("No GTP-U layer")
+		return nil, fmt.Errorf("no GTP-U layer")
 	}
 	return p.Layers()[3], nil
 }

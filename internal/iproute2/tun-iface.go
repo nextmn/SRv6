@@ -39,7 +39,7 @@ func (t *TunIface) CreateAndUp() error {
 	}
 	iface, err := water.New(config)
 	if err != nil {
-		return fmt.Errorf("Unable to allocate TUN interface: %s", err)
+		return fmt.Errorf("unable to allocate TUN interface: %s", err)
 	}
 	t.iface = iface
 	if err := t.DropIcmpRedirect(); err != nil {
@@ -57,7 +57,7 @@ func (t *TunIface) Delete() error {
 		return nil
 	}
 	if err := runIP("link", "del", t.iface.Name()); err != nil {
-		return fmt.Errorf("Unable to delete interface %s: %s", t.iface.Name(), err)
+		return fmt.Errorf("unable to delete interface %s: %s", t.iface.Name(), err)
 	}
 	if err := t.CancelDropIcmpRedirect(); err != nil {
 		return err
@@ -115,10 +115,10 @@ func (t *TunIface) DropIcmpRedirect() error {
 		return nil
 	}
 	if err := runIPTables("-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
-		return fmt.Errorf("Unable to drop icmp redirect on interface %s: %s", t.iface.Name(), err)
+		return fmt.Errorf("unable to drop icmp redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	if err := runIP6Tables("-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
-		return fmt.Errorf("Unable to drop icmpv6 redirect on interface %s: %s", t.iface.Name(), err)
+		return fmt.Errorf("unable to drop icmpv6 redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	return nil
 }
@@ -129,10 +129,10 @@ func (t *TunIface) CancelDropIcmpRedirect() error {
 		return nil
 	}
 	if err := runIP6Tables("-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
-		return fmt.Errorf("Unable to drop icmpv6 redirect on interface %s: %s", t.iface.Name(), err)
+		return fmt.Errorf("unable to drop icmpv6 redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	if err := runIPTables("-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
-		return fmt.Errorf("Unable to drop icmp redirect on interface %s: %s", t.iface.Name(), err)
+		return fmt.Errorf("unable to drop icmp redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	return nil
 }

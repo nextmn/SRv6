@@ -40,7 +40,7 @@ func (h SingleHook) Run() error {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("Error running %s: %s", cmd.Args[0], err)
+		return fmt.Errorf("error running %s: %w", cmd.Args[0], err)
 	}
 	return nil
 }

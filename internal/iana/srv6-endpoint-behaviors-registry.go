@@ -48,7 +48,7 @@ func ToEndpointBehavior(s string) (EndpointBehavior, error) {
 	case "end.m.gtp4.e":
 		return End_M_GTP4_E, nil
 	default:
-		return NotToBeAllocated, fmt.Errorf("The value %s cannot be converted to EndpointBehavior. It may not be implemented, or contain a typo.", s)
+		return NotToBeAllocated, fmt.Errorf("the value %s cannot be converted to EndpointBehavior, it may not be implemented, or contain a typo", s)
 	}
 }
 
@@ -82,7 +82,7 @@ func (e *EndpointBehavior) ToIPRoute2Action() (string, error) {
 	case End_DX4:
 		return "End.DX4", nil
 	default:
-		return "", fmt.Errorf("Not implemented")
+		return "", fmt.Errorf("not implemented")
 	}
 }
 

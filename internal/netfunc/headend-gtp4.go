@@ -63,7 +63,7 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 	// S03. Copy IPv4 DA and TEID to form SID B
 	layerGTPU := pqt.Layer(layers.LayerTypeGTPv1U)
 	if layerGTPU == nil {
-		return nil, fmt.Errorf("Could not parse GTPU layer")
+		return nil, fmt.Errorf("could not parse GTPU layer")
 	}
 	gtpu := layerGTPU.(*layers.GTPv1U)
 	teid := gtpu.TEID
@@ -71,7 +71,7 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 	// handle echo request
 	if gtpu.MessageType == constants.GTPU_MESSAGE_TYPE_ECHO_REQUEST {
 		if !gtpu.SequenceNumberFlag {
-			return nil, fmt.Errorf("No sequence number flag in GTP Echo Request")
+			return nil, fmt.Errorf("no sequence number flag in GTP Echo Request")
 		}
 		ipv4resp := layers.IPv4{
 			// IPv4
@@ -179,17 +179,17 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 					// init innerHeaderIPv4
 					inner, ok := payload.(*layers.IPv4)
 					if !ok {
-						return nil, fmt.Errorf("Payload is not IPv4")
+						return nil, fmt.Errorf("payload is not IPv4")
 					}
 					if inner.Version != 4 {
-						return nil, fmt.Errorf("Payload is IPv%d instead of IPv4", inner.Version)
+						return nil, fmt.Errorf("payload is IPv%d instead of IPv4", inner.Version)
 					}
 					innerHeaderIPv4 = netip.AddrFrom4([4]byte{inner.SrcIP[0], inner.SrcIP[1], inner.SrcIP[2], inner.SrcIP[3]})
 					isInnerHeaderIPv4 = true
 				}
 				prefix, err := netip.ParsePrefix(*p.Match.InnerHeaderIPv4SrcPrefix)
 				if err != nil {
-					return nil, fmt.Errorf("Malformed matching criteria (inner Header IPv4 Prefix): %s", err)
+					return nil, fmt.Errorf("malformed matching criteria (inner Header IPv4 Prefix): %s", err)
 				}
 				if prefix.Contains(innerHeaderIPv4) {
 					// prefix matches
@@ -205,11 +205,11 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 		}
 	}
 	if bsid == nil {
-		return nil, fmt.Errorf("Could not found policy matching criteria")
+		return nil, fmt.Errorf("could not found policy matching criteria")
 	}
 
 	if bsid.BsidPrefix == nil {
-		return nil, fmt.Errorf("Error with policy found")
+		return nil, fmt.Errorf("error with policy found")
 	}
 	dstPrefix, err := netip.ParsePrefix(*bsid.BsidPrefix)
 	if err != nil {
@@ -224,17 +224,17 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 	srcPrefix := h.sourceAddressPrefix
 	ipv6SA := encoding.NewMGTP4IPv6Src(srcPrefix, [4]byte(ipv4SA), binary.BigEndian.Uint16(udpSP))
 	if err != nil {
-		return nil, fmt.Errorf("Error during creation of IPv6 SA: %s", err)
+		return nil, fmt.Errorf("error during creation of IPv6 SA: %w", err)
 	}
 
 	src, err := ipv6SA.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("Error during serialization of IPv6 SA: %s", err)
+		return nil, fmt.Errorf("error during serialization of IPv6 SA: %w", err)
 	}
 
 	seg0, err := ipv6DA.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("Error during serialization of Segment[0]: %s", err)
+		return nil, fmt.Errorf("error during serialization of Segment[0]: %w", err)
 	}
 	nextHop := seg0
 	if len(bsid.SegmentsList) > 0 {

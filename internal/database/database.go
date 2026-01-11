@@ -33,7 +33,7 @@ type Database struct {
 func (db *Database) prepare(ctx context.Context, name string, query string) error {
 	s, err := db.PrepareContext(ctx, query)
 	if err != nil {
-		return fmt.Errorf("Could not prepare statement %s: %s", name, err)
+		return fmt.Errorf("could not prepare statement %s: %s", name, err)
 	}
 	db.stmt[name] = s
 	return nil
@@ -49,7 +49,7 @@ func NewDatabase(db *sql.DB) *Database {
 func (db *Database) Init(ctx context.Context) error {
 	_, err := db.Exec(database_sql)
 	if err != nil {
-		return fmt.Errorf("Could not initialize database: %s", err)
+		return fmt.Errorf("could not initialize database: %s", err)
 	}
 	l := map[string]string{}
 	// use generated code
@@ -72,7 +72,7 @@ func (db *Database) Init(ctx context.Context) error {
 
 	for k, v := range l {
 		if err := db.prepare(ctx, k, v); err != nil {
-			return fmt.Errorf("Could not prepare statement %s: %s", k, err)
+			return fmt.Errorf("could not prepare statement %s: %s", k, err)
 		}
 	}
 	return nil
@@ -114,7 +114,7 @@ func (db *Database) InsertRule(ctx context.Context, r n4tosrv6.Rule) (*uuid.UUID
 			err := stmt.QueryRowContext(ctx, r.Enabled, inneripsrc, pq.Array(outeripsrc), r.Match.Header.FTeid.Teid, r.Match.Header.FTeid.Addr.String(), inneripdst, pq.Array(srh)).Scan(&id)
 			return &id, err
 		} else {
-			return nil, fmt.Errorf("Procedure not registered")
+			return nil, fmt.Errorf("procedure not registered")
 		}
 	case "downlink":
 		if stmt, ok := db.stmt["insert_downlink_rule"]; ok {
@@ -129,16 +129,16 @@ func (db *Database) InsertRule(ctx context.Context, r n4tosrv6.Rule) (*uuid.UUID
 			if r.Action.SourceGtp4 != nil {
 				src_ipv6 = r.Action.SourceGtp4.String()
 			} else {
-				return nil, fmt.Errorf("Empty SourceGtp4 for downlink Action")
+				return nil, fmt.Errorf("empty SourceGtp4 for downlink action")
 			}
 
 			err := stmt.QueryRowContext(ctx, r.Enabled, dst, pq.Array(srh), src_ipv6).Scan(&id)
 			return &id, err
 		} else {
-			return nil, fmt.Errorf("Procedure not registered")
+			return nil, fmt.Errorf("procedure not registered")
 		}
 	default:
-		return nil, fmt.Errorf("Wrong type for the rule")
+		return nil, fmt.Errorf("wrong type for the rule")
 	}
 }
 
@@ -229,7 +229,7 @@ func (db *Database) GetRule(ctx context.Context, uuid uuid.UUID) (n4tosrv6.Rule,
 		}
 		return rule, err
 	}
-	return n4tosrv6.Rule{}, fmt.Errorf("Procedure not registered")
+	return n4tosrv6.Rule{}, fmt.Errorf("procedure not registered")
 }
 
 func (db *Database) GetRules(ctx context.Context) (n4tosrv6.RuleMap, error) {
@@ -334,7 +334,7 @@ func (db *Database) GetRules(ctx context.Context) (n4tosrv6.RuleMap, error) {
 		return m, nil
 
 	}
-	return n4tosrv6.RuleMap{}, fmt.Errorf("Procedure not registered")
+	return n4tosrv6.RuleMap{}, fmt.Errorf("procedure not registered")
 }
 
 func (db *Database) EnableRule(ctx context.Context, uuid uuid.UUID) error {
@@ -342,7 +342,7 @@ func (db *Database) EnableRule(ctx context.Context, uuid uuid.UUID) error {
 		_, err := stmt.ExecContext(ctx, uuid.String())
 		return err
 	} else {
-		return fmt.Errorf("Procedure not registered")
+		return fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -351,7 +351,7 @@ func (db *Database) DisableRule(ctx context.Context, uuid uuid.UUID) error {
 		_, err := stmt.ExecContext(ctx, uuid.String())
 		return err
 	} else {
-		return fmt.Errorf("Procedure not registered")
+		return fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -360,7 +360,7 @@ func (db *Database) SwitchRule(ctx context.Context, uuidEnable uuid.UUID, uuidDi
 		_, err := stmt.ExecContext(ctx, uuidEnable.String(), uuidDisable.String())
 		return err
 	} else {
-		return fmt.Errorf("Procedure not registered")
+		return fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -369,7 +369,7 @@ func (db *Database) DeleteRule(ctx context.Context, uuid uuid.UUID) error {
 		_, err := stmt.ExecContext(ctx, uuid.String())
 		return err
 	} else {
-		return fmt.Errorf("Procedure not registered")
+		return fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -388,7 +388,7 @@ func (db *Database) GetUplinkAction(ctx context.Context, uplinkFTeid jsonapi.Fte
 			SRH: *srh,
 		}, err
 	} else {
-		return n4tosrv6.Action{}, fmt.Errorf("Procedure not registered")
+		return n4tosrv6.Action{}, fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -405,7 +405,7 @@ func (db *Database) GetDownlinkAction(ctx context.Context, ueIp netip.Addr) (n4t
 			return n4tosrv6.Action{}, err
 		}
 		if action_source_gtp4 == nil {
-			return n4tosrv6.Action{}, fmt.Errorf("Empty SourceGtp4 for downlink rule")
+			return n4tosrv6.Action{}, fmt.Errorf("empty SourceGtp4 for downlink rule")
 		}
 		source_gtp4, err := netip.ParseAddr(*action_source_gtp4)
 		if err != nil {
@@ -416,7 +416,7 @@ func (db *Database) GetDownlinkAction(ctx context.Context, ueIp netip.Addr) (n4t
 			SourceGtp4: &source_gtp4,
 		}, err
 	} else {
-		return n4tosrv6.Action{}, fmt.Errorf("Procedure not registered")
+		return n4tosrv6.Action{}, fmt.Errorf("procedure not registered")
 	}
 }
 
@@ -426,7 +426,7 @@ func (db *Database) UpdateAction(ctx context.Context, uuidRule uuid.UUID, action
 	if action.SourceGtp4 != nil {
 		source_gtp4 = action.SourceGtp4.String()
 	} else {
-		return fmt.Errorf("Empty SourceGtp4 for downlink rule")
+		return fmt.Errorf("empty SourceGtp4 for downlink rule")
 	}
 	for _, ip := range action.SRH {
 		srh = append(srh, ip.String())
@@ -435,6 +435,6 @@ func (db *Database) UpdateAction(ctx context.Context, uuidRule uuid.UUID, action
 		_, err := stmt.ExecContext(ctx, uuidRule.String(), pq.Array(srh), source_gtp4)
 		return err
 	} else {
-		return fmt.Errorf("Procedure not registered")
+		return fmt.Errorf("procedure not registered")
 	}
 }

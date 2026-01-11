@@ -24,6 +24,6 @@ func NewEndpoint(ec *config.Endpoint, ttl uint8, hopLimit uint8) (netfunc_api.Ne
 
 		return NewNetFunc(NewEndpointMGTP4E(p, ttl, hopLimit)), nil
 	default:
-		return nil, fmt.Errorf("Unsupported endpoint behavior (%s) with this provider (%s)", ec.Behavior, ec.Provider)
+		return nil, fmt.Errorf("unsupported endpoint behavior (%s) with this provider (%s)", ec.Behavior, ec.Provider)
 	}
 }

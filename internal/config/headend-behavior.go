@@ -43,7 +43,7 @@ func (p *HeadendBehavior) UnmarshalYAML(n *yaml.Node) error {
 	case "h.m.gtp4.d":
 		*p = H_M_GTP4_D
 	default:
-		return fmt.Errorf("Unknown headend behavior")
+		return fmt.Errorf("unknown headend behavior")
 	}
 	return nil
 }

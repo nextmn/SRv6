@@ -43,7 +43,7 @@ func (p *Provider) UnmarshalYAML(n *yaml.Node) error {
 	case "nextmn-ctrl", "nextmnwithcontroller", "nextmn-with-controller", "nextmn-via-controller":
 		*p = ProviderNextMNWithController
 	default:
-		return fmt.Errorf("Unknown provider")
+		return fmt.Errorf("unknown provider")
 	}
 	return nil
 }

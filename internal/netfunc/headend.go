@@ -21,11 +21,11 @@ func NewHeadend(he *config.Headend, ttl uint8, hopLimit uint8) (netfunc_api.NetF
 	switch he.Behavior {
 	case config.H_M_GTP4_D:
 		if he.Policy == nil {
-			return nil, fmt.Errorf("Policy is nil")
+			return nil, fmt.Errorf("policy is nil")
 		}
 		policy := *he.Policy
 		if he.SourceAddressPrefix == nil {
-			return nil, fmt.Errorf("Missing source-address-prefix")
+			return nil, fmt.Errorf("missing source-address-prefix")
 		}
 		srcAddressPrefix, err := netip.ParsePrefix(*he.SourceAddressPrefix)
 		if err != nil {
@@ -34,6 +34,6 @@ func NewHeadend(he *config.Headend, ttl uint8, hopLimit uint8) (netfunc_api.NetF
 
 		return NewNetFunc(NewHeadendGTP4(p, srcAddressPrefix, policy, ttl, hopLimit)), nil
 	default:
-		return nil, fmt.Errorf("Unsupported headend behavior (%s) with this provider (%s)", he.Behavior, he.Provider)
+		return nil, fmt.Errorf("unsupported headend behavior (%s) with this provider (%s)", he.Behavior, he.Provider)
 	}
 }

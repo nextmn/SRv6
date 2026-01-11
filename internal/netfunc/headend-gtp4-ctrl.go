@@ -63,7 +63,7 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 	// S03. Copy IPv4 DA and TEID to form SID B
 	layerGTPU := pqt.Layer(layers.LayerTypeGTPv1U)
 	if layerGTPU == nil {
-		return nil, fmt.Errorf("Could not parse GTPU layer")
+		return nil, fmt.Errorf("could not parse GTPU layer")
 	}
 	gtpu := layerGTPU.(*layers.GTPv1U)
 	teid := gtpu.TEID
@@ -71,7 +71,7 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 	// handle echo request
 	if gtpu.MessageType == constants.GTPU_MESSAGE_TYPE_ECHO_REQUEST {
 		if !gtpu.SequenceNumberFlag {
-			return nil, fmt.Errorf("No sequence number flag in GTP Echo Request")
+			return nil, fmt.Errorf("no sequence number flag in GTP Echo Request")
 		}
 		ipv4resp := layers.IPv4{
 			// IPv4
@@ -133,10 +133,10 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 	// Check payload is IPv4
 	inner, ok := payload.(*layers.IPv4)
 	if !ok {
-		return nil, fmt.Errorf("Payload is not IPv4")
+		return nil, fmt.Errorf("payload is not IPv4")
 	}
 	if inner.Version != 4 {
-		return nil, fmt.Errorf("Payload is IPv%d instead of IPv4", inner.Version)
+		return nil, fmt.Errorf("payload is IPv%d instead of IPv4", inner.Version)
 	}
 	// Get Inner IPv4 Header Addresses
 	innerHeaderSrcIPv4 := netip.AddrFrom4([4]byte{inner.SrcIP[0], inner.SrcIP[1], inner.SrcIP[2], inner.SrcIP[3]})
@@ -155,7 +155,7 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 	src, err := ipv6SA.Marshal()
 	segs := action.SRH.AsSlice()
 	if err != nil {
-		return nil, fmt.Errorf("Error during serialization of IPv6 SA: %w", err)
+		return nil, fmt.Errorf("error during serialization of IPv6 SA: %w", err)
 	}
 	ipheader := &layers.IPv6{
 		SrcIP: src,

@@ -48,7 +48,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 	// Getting config from environment
 	host, ok := os.LookupEnv("POSTGRES_HOST")
 	if !ok {
-		return fmt.Errorf("No host provided for postgres")
+		return fmt.Errorf("no host provided for postgres")
 	}
 	db.host = host
 	port, ok := os.LookupEnv("POSTGRES_PORT")
@@ -65,7 +65,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 		} else {
 			b, err := os.ReadFile(user_file)
 			if err != nil {
-				return fmt.Errorf("Could not read file %s to get postgres user", user_file)
+				return fmt.Errorf("could not read file %s to get postgres user", user_file)
 			}
 			db.user = string(b)
 		}
@@ -84,11 +84,11 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 		if !ok {
 			password_file, ok := os.LookupEnv("POSTGRES_PASSWORD_FILE")
 			if !ok {
-				return fmt.Errorf("No password provided for postgres")
+				return fmt.Errorf("no password provided for postgres")
 			}
 			b, err := os.ReadFile(password_file)
 			if err != nil {
-				return fmt.Errorf("Could not read file %s to get postgres password", password_file)
+				return fmt.Errorf("could not read file %s to get postgres password", password_file)
 			}
 			db.password = string(b)
 		}
@@ -104,7 +104,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 
 	postgres, err := sql.Open("postgres", psqlconn)
 	if err != nil {
-		return fmt.Errorf("Error while openning postgres database: %s", err)
+		return fmt.Errorf("error while openning postgres database: %s", err)
 	}
 
 	maxAttempts := 16
@@ -133,7 +133,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 		}
 	}
 	if !ok {
-		return fmt.Errorf("Could not connect to postgres database after %d attempts: %s", maxAttempts, err)
+		return fmt.Errorf("could not connect to postgres database after %d attempts: %w", maxAttempts, err)
 	}
 
 	db.db = database.NewDatabase(postgres)
@@ -155,7 +155,7 @@ func (db *DBTask) RunExit() error {
 		db.registry.DeleteDB()
 	}
 	if db.db == nil {
-		return fmt.Errorf("No database")
+		return fmt.Errorf("no database")
 	}
 	db.db.Exit()
 	db.db.Close()

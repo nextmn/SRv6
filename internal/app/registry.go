@@ -34,7 +34,7 @@ func (r *Registry) TunIface(name string) (*iproute2.TunIface, bool) {
 
 func (r *Registry) RegisterTunIface(iface *iproute2.TunIface) error {
 	if _, exists := r.ifaces[iface.Name()]; exists {
-		return fmt.Errorf("Iface %s is already registered.", iface.Name())
+		return fmt.Errorf("iface %s is already registered", iface.Name())
 	}
 	r.ifaces[iface.Name()] = iface
 	return nil

@@ -34,13 +34,13 @@ func NewEndpointMGTP4E(prefix netip.Prefix, ttl uint8, hopLimit uint8) *Endpoint
 func (e EndpointMGTP4E) ipv6DAFields(p *Packet) (*encoding.MGTP4IPv6Dst, error) {
 	layerIPv6 := p.Layer(layers.LayerTypeIPv6)
 	if layerIPv6 == nil {
-		return nil, fmt.Errorf("Malformed IPv6 packet")
+		return nil, fmt.Errorf("malformed IPv6 packet")
 	}
 	// get destination address
 	dstSlice := layerIPv6.(*layers.IPv6).NetworkFlow().Dst().Raw()
 	prefix := e.Prefix().Bits()
 	if prefix < 0 {
-		return nil, fmt.Errorf("Wrong prefix")
+		return nil, fmt.Errorf("wrong prefix")
 	}
 	if dst, err := encoding.ParseMGTP4IPv6Dst([16]byte(dstSlice), uint(prefix)); err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (e EndpointMGTP4E) ipv6DAFields(p *Packet) (*encoding.MGTP4IPv6Dst, error) 
 func (e EndpointMGTP4E) ipv6SAFields(p *Packet) (*encoding.MGTP4IPv6Src, error) {
 	layerIPv6 := p.Layer(layers.LayerTypeIPv6)
 	if layerIPv6 == nil {
-		return nil, fmt.Errorf("Malformed IPv6 packet")
+		return nil, fmt.Errorf("malformed IPv6 packet")
 	}
 	// get destination address
 	srcSlice := layerIPv6.(*layers.IPv6).NetworkFlow().Src().Raw()
@@ -87,7 +87,7 @@ func (e EndpointMGTP4E) Handle(ctx context.Context, packet []byte) ([]byte, erro
 		// S04.   }
 		if srh.SegmentsLeft != 0 {
 			// TODO: Send ICMP response
-			return nil, fmt.Errorf("Segments Left is not zero")
+			return nil, fmt.Errorf("segments left field is not zero")
 		}
 		// TODO: check HMAC
 

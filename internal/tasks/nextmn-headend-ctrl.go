@@ -44,7 +44,7 @@ func (t *TaskNextMNHeadendWithCtrl) RunInit(ctx context.Context) error {
 	// Create and start headend
 	tunIface, ok := t.registry.TunIface(t.iface_name)
 	if !ok {
-		return fmt.Errorf("Interface %s is not in registry", t.iface_name)
+		return fmt.Errorf("interface %s is not in registry", t.iface_name)
 	}
 	ttl, err := tunIface.IPv4TTL()
 	if err != nil {

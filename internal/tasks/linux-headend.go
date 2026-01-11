@@ -37,7 +37,7 @@ func NewTaskLinuxHeadend(name string, headend *config.Headend, table_name string
 // Init
 func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 	if t.headend.Policy == nil {
-		return fmt.Errorf("No policy set for this headend")
+		return fmt.Errorf("no policy set for this headend")
 	}
 	seglist := ""
 	for _, p := range *t.headend.Policy {
@@ -47,7 +47,7 @@ func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 		}
 	}
 	if seglist == "" {
-		return fmt.Errorf("Segment List is empty. Bad YAML indentation?")
+		return fmt.Errorf("segment List is empty (bad YAML indentation?)")
 	}
 
 	switch t.headend.Behavior {
@@ -66,7 +66,7 @@ func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unsupported headend behavior (%s) with this provider (%s)", t.headend.Behavior, t.headend.Provider)
+		return fmt.Errorf("unsupported headend behavior (%s) with this provider (%s)", t.headend.Behavior, t.headend.Provider)
 	}
 	t.state = true
 	return nil
@@ -75,7 +75,7 @@ func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 // Exit
 func (t *TaskLinuxHeadend) RunExit() error {
 	if t.headend.Policy == nil {
-		return fmt.Errorf("No policy set for this headend")
+		return fmt.Errorf("no policy set for this headend")
 	}
 	seglist := ""
 	for _, p := range *t.headend.Policy {
@@ -95,7 +95,7 @@ func (t *TaskLinuxHeadend) RunExit() error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unsupported headend behavior (%s) with this provider (%s).", t.headend.Behavior, t.headend.Provider)
+		return fmt.Errorf("unsupported headend behavior (%s) with this provider (%s)", t.headend.Behavior, t.headend.Provider)
 	}
 	t.state = false
 	return nil
