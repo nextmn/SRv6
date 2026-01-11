@@ -122,9 +122,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 			logrus.WithFields(logrus.Fields{"attempt": errcnt}).Warn("Could not connect to postgres database.")
 		}
 		// blocks until success, timeout, or ctx.Done()
-		select {
-		case <-wait.Done():
-		}
+		<-wait.Done()
 		// check if wait.Done() is a result of ctx.Done()
 		select {
 		case <-ctx.Done():

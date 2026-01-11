@@ -94,8 +94,6 @@ func (r *Registry) Run(ctx context.Context) error {
 	if err := r.RunInit(ctx); err != nil {
 		return err
 	}
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+	<-ctx.Done()
+	return nil
 }
