@@ -14,12 +14,13 @@ import (
 	"time"
 
 	app_api "github.com/nextmn/srv6/internal/app/api"
-	ctrl_api "github.com/nextmn/srv6/internal/ctrl/api"
-	"github.com/sirupsen/logrus"
-
 	"github.com/nextmn/srv6/internal/ctrl"
+	ctrl_api "github.com/nextmn/srv6/internal/ctrl/api"
+
+	"github.com/nextmn/logrus-formatter/ginlogger"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // HttpServerTask starts an http server
@@ -55,8 +56,10 @@ func (t *HttpServerTask) RunInit(ctx context.Context) error {
 	}
 	rr := ctrl.NewRulesRegistry(db)
 	t.rulesRegistryHTTP = rr
-	// TODO:  gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Use(gin.Recovery())
+	r.Use(ginlogger.LoggingMiddleware)
 	r.GET("/status", func(c *gin.Context) {
 		c.Header("Cache-Control", "no-cache")
 		c.JSON(http.StatusOK, gin.H{"ready": true})
