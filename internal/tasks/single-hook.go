@@ -6,8 +6,8 @@
 package tasks
 
 import (
+	"context"
 	"fmt"
-	"os"
 	"os/exec"
 )
 
@@ -30,15 +30,13 @@ func (h SingleHook) Name() string {
 }
 
 // Runs the command of the SingleHook
-func (h SingleHook) Run() error {
+func (h SingleHook) Run(ctx context.Context) error {
 	if h.command == nil {
 		// nothing to do
 		return nil
 	}
-	cmd := exec.Command(*h.command)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
+	cmd := exec.CommandContext(ctx, *h.command)
+	cmd.Env = []string{}
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error running %s: %w", cmd.Args[0], err)
 	}

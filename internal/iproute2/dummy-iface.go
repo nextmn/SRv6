@@ -5,6 +5,10 @@
 
 package iproute2
 
+import (
+	"context"
+)
+
 // IPRoute2 Dummy interface
 type DummyIface struct {
 	name string
@@ -16,35 +20,35 @@ func NewDummyIface(name string) *DummyIface {
 }
 
 // Create iproute2 dummy interface
-func (iface DummyIface) create() error {
-	if err := runIP("link", "add", iface.name, "type", "dummy"); err != nil {
+func (iface DummyIface) create(ctx context.Context) error {
+	if err := runIP(ctx, "link", "add", iface.name, "type", "dummy"); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Set iproute2 dummy interface link up
-func (iface DummyIface) up() error {
-	if err := runIP("link", "set", iface.name, "up"); err != nil {
+func (iface DummyIface) up(ctx context.Context) error {
+	if err := runIP(ctx, "link", "set", iface.name, "up"); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Create iproute2 dummy interface and set link up
-func (iface DummyIface) CreateAndUp() error {
-	if err := iface.create(); err != nil {
+func (iface DummyIface) CreateAndUp(ctx context.Context) error {
+	if err := iface.create(ctx); err != nil {
 		return err
 	}
-	if err := iface.up(); err != nil {
+	if err := iface.up(ctx); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Delete iproute2 dummy interface
-func (iface DummyIface) Delete() error {
-	if err := runIP("link", "del", iface.Name()); err != nil {
+func (iface DummyIface) Delete(ctx context.Context) error {
+	if err := runIP(ctx, "link", "del", iface.Name()); err != nil {
 		return err
 	}
 	return nil

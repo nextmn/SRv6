@@ -6,6 +6,7 @@
 package iproute2
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -29,7 +30,7 @@ func NewTunIface(name string) *TunIface {
 }
 
 // Create the TunIface and set it up
-func (t *TunIface) CreateAndUp() error {
+func (t *TunIface) CreateAndUp(ctx context.Context) error {
 	config := water.Config{
 		DeviceType: water.TUN,
 		PlatformSpecificParams: water.PlatformSpecificParams{
@@ -42,24 +43,24 @@ func (t *TunIface) CreateAndUp() error {
 		return fmt.Errorf("unable to allocate TUN interface: %s", err)
 	}
 	t.iface = iface
-	if err := t.DropIcmpRedirect(); err != nil {
+	if err := t.DropIcmpRedirect(ctx); err != nil {
 		return err
 	}
-	if err := runIP("link", "set", "dev", t.iface.Name(), "up"); err != nil {
+	if err := runIP(ctx, "link", "set", "dev", t.iface.Name(), "up"); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Stop TunIface related goroutines and delete the interface
-func (t *TunIface) Delete() error {
+func (t *TunIface) Delete(ctx context.Context) error {
 	if t.iface == nil {
 		return nil
 	}
-	if err := runIP("link", "del", t.iface.Name()); err != nil {
+	if err := runIP(ctx, "link", "del", t.iface.Name()); err != nil {
 		return fmt.Errorf("unable to delete interface %s: %s", t.iface.Name(), err)
 	}
-	if err := t.CancelDropIcmpRedirect(); err != nil {
+	if err := t.CancelDropIcmpRedirect(ctx); err != nil {
 		return err
 	}
 	return nil
@@ -110,28 +111,28 @@ func (t *TunIface) IPv4TTL() (uint8, error) {
 }
 
 // Drop ICMP/ICMPv6 redirects on the interface
-func (t *TunIface) DropIcmpRedirect() error {
+func (t *TunIface) DropIcmpRedirect(ctx context.Context) error {
 	if t.iface == nil {
 		return nil
 	}
-	if err := runIPTables("-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
+	if err := runIPTables(ctx, "-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
 		return fmt.Errorf("unable to drop icmp redirect on interface %s: %w", t.iface.Name(), err)
 	}
-	if err := runIP6Tables("-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
+	if err := runIP6Tables(ctx, "-A", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
 		return fmt.Errorf("unable to drop icmpv6 redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	return nil
 }
 
 // Cancel Drop ICMP/ICMPv6 redirects on the interface
-func (t *TunIface) CancelDropIcmpRedirect() error {
+func (t *TunIface) CancelDropIcmpRedirect(ctx context.Context) error {
 	if t.iface == nil {
 		return nil
 	}
-	if err := runIP6Tables("-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
+	if err := runIP6Tables(ctx, "-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmpv6", "--icmpv6-type", "redirect", "-j", "DROP"); err != nil {
 		return fmt.Errorf("unable to drop icmpv6 redirect on interface %s: %w", t.iface.Name(), err)
 	}
-	if err := runIPTables("-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
+	if err := runIPTables(ctx, "-D", "OUTPUT", "-o", t.iface.Name(), "-p", "icmp", "--icmp-type", "redirect", "-j", "DROP"); err != nil {
 		return fmt.Errorf("unable to drop icmp redirect on interface %s: %w", t.iface.Name(), err)
 	}
 	return nil

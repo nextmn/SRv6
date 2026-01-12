@@ -90,7 +90,7 @@ func (t *ControllerRegistryTask) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *ControllerRegistryTask) RunExit() error {
+func (t *ControllerRegistryTask) RunExit(ctx context.Context) error {
 	// TODO: retry on timeout failure
 	// TODO: if Resource has scheme, don't concatenate
 	if t.SetupRegistry != nil {
@@ -103,7 +103,7 @@ func (t *ControllerRegistryTask) RunExit() error {
 		return nil
 	}
 	// no context since Background Context is already Done
-	req, err := http.NewRequest(http.MethodDelete, t.ControllerRegistry.RemoteControlURI.JoinPath(t.ControllerRegistry.Resource).String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, t.ControllerRegistry.RemoteControlURI.JoinPath(t.ControllerRegistry.Resource).String(), nil)
 	if err != nil {
 		return err
 	}

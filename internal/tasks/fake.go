@@ -28,7 +28,7 @@ func (t *FakeTask) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *FakeTask) RunExit() error {
+func (t *FakeTask) RunExit(ctx context.Context) error {
 	t.state = false
 	return nil
 }

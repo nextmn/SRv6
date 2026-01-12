@@ -47,11 +47,11 @@ func NewTaskIP4Rule(name string, prefix netip.Prefix, table_name string) *TaskIP
 // Setup ip rules
 func (t *TaskIPRule) RunInit(ctx context.Context) error {
 	if t.family4 {
-		if err := t.table.AddRule4(t.prefix.String()); err != nil {
+		if err := t.table.AddRule4(ctx, t.prefix.String()); err != nil {
 			return err
 		}
 	} else {
-		if err := t.table.AddRule6(t.prefix.String()); err != nil {
+		if err := t.table.AddRule6(ctx, t.prefix.String()); err != nil {
 			return err
 		}
 	}
@@ -60,13 +60,13 @@ func (t *TaskIPRule) RunInit(ctx context.Context) error {
 }
 
 // Delete ip rules
-func (t *TaskIPRule) RunExit() error {
+func (t *TaskIPRule) RunExit(ctx context.Context) error {
 	if t.family4 {
-		if err := t.table.DelRule4(t.prefix.String()); err != nil {
+		if err := t.table.DelRule4(ctx, t.prefix.String()); err != nil {
 			return err
 		}
 	} else {
-		if err := t.table.DelRule6(t.prefix.String()); err != nil {
+		if err := t.table.DelRule6(ctx, t.prefix.String()); err != nil {
 			return err
 		}
 	}

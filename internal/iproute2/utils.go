@@ -6,18 +6,16 @@
 package iproute2
 
 import (
+	"context"
 	"fmt"
 	"net/netip"
-	"os"
 	"os/exec"
 )
 
 // Run ip command
-func runIP(args ...string) error {
-	cmd := exec.Command("ip", args...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
+func runIP(ctx context.Context, args ...string) error {
+	cmd := exec.CommandContext(ctx, "ip", args...)
+	cmd.Env = []string{}
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error running %s: %w", cmd.Args, err)
 	}
@@ -25,11 +23,9 @@ func runIP(args ...string) error {
 }
 
 // Run iptables command
-func runIPTables(args ...string) error {
-	cmd := exec.Command("iptables", args...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
+func runIPTables(ctx context.Context, args ...string) error {
+	cmd := exec.CommandContext(ctx, "iptables", args...)
+	cmd.Env = []string{}
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error running %s: %w", cmd.Args, err)
 	}
@@ -37,17 +33,15 @@ func runIPTables(args ...string) error {
 }
 
 // Run ip6tables command
-func runIP6Tables(args ...string) error {
-	cmd := exec.Command("ip6tables", args...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
+func runIP6Tables(ctx context.Context, args ...string) error {
+	cmd := exec.CommandContext(ctx, "ip6tables", args...)
+	cmd.Env = []string{}
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error running %s: %w", cmd.Args, err)
 	}
 	return nil
 }
 
-func IPSrSetSourceAddress(address netip.Addr) error {
-	return runIP("sr", "tunsrc", "set", address.String())
+func IPSrSetSourceAddress(ctx context.Context, address netip.Addr) error {
+	return runIP(ctx, "sr", "tunsrc", "set", address.String())
 }

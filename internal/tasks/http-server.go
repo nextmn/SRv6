@@ -57,9 +57,7 @@ func (t *HttpServerTask) RunInit(ctx context.Context) error {
 	rr := ctrl.NewRulesRegistry(db)
 	t.rulesRegistryHTTP = rr
 	gin.SetMode(gin.ReleaseMode)
-	r := gin.New()
-	r.Use(gin.Recovery())
-	r.Use(ginlogger.LoggingMiddleware)
+	r := ginlogger.Default()
 	r.GET("/status", func(c *gin.Context) {
 		c.Header("Cache-Control", "no-cache")
 		c.JSON(http.StatusOK, gin.H{"ready": true})
@@ -91,7 +89,7 @@ func (t *HttpServerTask) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *HttpServerTask) RunExit() error {
+func (t *HttpServerTask) RunExit(ctx context.Context) error {
 	t.state = false
 	ctx, cancel := context.WithTimeout(context.TODO(), 1*time.Second) // context.Background() is already Done()
 	defer cancel()

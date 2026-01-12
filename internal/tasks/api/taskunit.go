@@ -5,8 +5,12 @@
 
 package tasks_api
 
+import (
+	"context"
+)
+
 // Task to be run
 type TaskUnit interface {
 	Name() string
-	Run() error
+	Run(ctx context.Context) error
 }

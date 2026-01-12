@@ -29,7 +29,7 @@ func NewTaskDummyIface(name string, iface_name string) *TaskDummyIface {
 
 // Create and set up the Iface
 func (t *TaskDummyIface) RunInit(ctx context.Context) error {
-	if err := t.iface.CreateAndUp(); err != nil {
+	if err := t.iface.CreateAndUp(ctx); err != nil {
 		return err
 	}
 	t.state = true
@@ -37,8 +37,8 @@ func (t *TaskDummyIface) RunInit(ctx context.Context) error {
 }
 
 // Delete the Iface
-func (t *TaskDummyIface) RunExit() error {
-	if err := t.iface.Delete(); err != nil {
+func (t *TaskDummyIface) RunExit(ctx context.Context) error {
+	if err := t.iface.Delete(ctx); err != nil {
 		return err
 	}
 	t.state = false

@@ -32,7 +32,7 @@ func NewTaskTunIface(name string, iface_name string, registry app_api.Registry) 
 
 // Create and set up the Iface
 func (t *TaskTunIface) RunInit(ctx context.Context) error {
-	if err := t.iface.CreateAndUp(); err != nil {
+	if err := t.iface.CreateAndUp(ctx); err != nil {
 		return err
 	}
 	if t.registry != nil {
@@ -45,8 +45,8 @@ func (t *TaskTunIface) RunInit(ctx context.Context) error {
 }
 
 // Delete the Iface
-func (t *TaskTunIface) RunExit() error {
-	if err := t.iface.Delete(); err != nil {
+func (t *TaskTunIface) RunExit(ctx context.Context) error {
+	if err := t.iface.Delete(ctx); err != nil {
 		return err
 	}
 	if t.registry != nil {

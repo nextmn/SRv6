@@ -30,7 +30,7 @@ func NewTaskBlackhole(name string, table_name string) *TaskBlackhole {
 
 // Create blackhole
 func (t *TaskBlackhole) RunInit(ctx context.Context) error {
-	if err := t.table.AddDefaultRoutesBlackhole(); err != nil {
+	if err := t.table.AddDefaultRoutesBlackhole(ctx); err != nil {
 		return err
 	}
 	t.state = true
@@ -38,8 +38,8 @@ func (t *TaskBlackhole) RunInit(ctx context.Context) error {
 }
 
 // Delete blackhole
-func (t *TaskBlackhole) RunExit() error {
-	if err := t.table.DelDefaultRoutesBlackhole(); err != nil {
+func (t *TaskBlackhole) RunExit(ctx context.Context) error {
+	if err := t.table.DelDefaultRoutesBlackhole(ctx); err != nil {
 		return err
 	}
 	t.state = false

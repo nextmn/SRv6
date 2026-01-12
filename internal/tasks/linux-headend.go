@@ -53,16 +53,16 @@ func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 	switch t.headend.Behavior {
 	case config.H_Encaps:
 		if t.headend.MTU != nil {
-			if err := t.table.AddSeg6EncapWithMTU(t.headend.To, seglist, t.iface_name, *t.headend.MTU); err != nil {
+			if err := t.table.AddSeg6EncapWithMTU(ctx, t.headend.To, seglist, t.iface_name, *t.headend.MTU); err != nil {
 				return err
 			}
 		} else {
-			if err := t.table.AddSeg6Encap(t.headend.To, seglist, t.iface_name); err != nil {
+			if err := t.table.AddSeg6Encap(ctx, t.headend.To, seglist, t.iface_name); err != nil {
 				return err
 			}
 		}
 	case config.H_Inline:
-		if err := t.table.AddSeg6Inline(t.headend.To, seglist, t.iface_name); err != nil {
+		if err := t.table.AddSeg6Inline(ctx, t.headend.To, seglist, t.iface_name); err != nil {
 			return err
 		}
 	default:
@@ -73,7 +73,7 @@ func (t *TaskLinuxHeadend) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *TaskLinuxHeadend) RunExit() error {
+func (t *TaskLinuxHeadend) RunExit(ctx context.Context) error {
 	if t.headend.Policy == nil {
 		return fmt.Errorf("no policy set for this headend")
 	}
@@ -87,11 +87,11 @@ func (t *TaskLinuxHeadend) RunExit() error {
 	}
 	switch t.headend.Behavior {
 	case config.H_Encaps:
-		if err := t.table.DelSeg6Encap(t.headend.To, seglist, t.iface_name); err != nil {
+		if err := t.table.DelSeg6Encap(ctx, t.headend.To, seglist, t.iface_name); err != nil {
 			return err
 		}
 	case config.H_Inline:
-		if err := t.table.DelSeg6Inline(t.headend.To, seglist, t.iface_name); err != nil {
+		if err := t.table.DelSeg6Inline(ctx, t.headend.To, seglist, t.iface_name); err != nil {
 			return err
 		}
 	default:

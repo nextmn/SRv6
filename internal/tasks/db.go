@@ -147,7 +147,7 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (db *DBTask) RunExit() error {
+func (db *DBTask) RunExit(ctx context.Context) error {
 	db.state = false
 	if db.registry != nil {
 		db.registry.DeleteDB()

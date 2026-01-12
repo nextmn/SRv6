@@ -35,7 +35,7 @@ func NewTaskLinuxEndpoint(name string, endpoint *config.Endpoint, table_name str
 
 // Init
 func (t *TaskLinuxEndpoint) RunInit(ctx context.Context) error {
-	if err := t.table.AddSeg6Local(t.endpoint.Prefix, t.endpoint.Behavior, t.iface_name); err != nil {
+	if err := t.table.AddSeg6Local(ctx, t.endpoint.Prefix, t.endpoint.Behavior, t.iface_name); err != nil {
 		return err
 	}
 	t.state = true
@@ -43,8 +43,8 @@ func (t *TaskLinuxEndpoint) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *TaskLinuxEndpoint) RunExit() error {
-	if err := t.table.DelSeg6Local(t.endpoint.Prefix, t.endpoint.Behavior, t.iface_name); err != nil {
+func (t *TaskLinuxEndpoint) RunExit(ctx context.Context) error {
+	if err := t.table.DelSeg6Local(ctx, t.endpoint.Prefix, t.endpoint.Behavior, t.iface_name); err != nil {
 		return err
 	}
 	t.state = false

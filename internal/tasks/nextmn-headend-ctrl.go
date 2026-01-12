@@ -62,7 +62,7 @@ func (t *TaskNextMNHeadendWithCtrl) RunInit(ctx context.Context) error {
 	}
 	go n.Run(ctx, tunIface)
 	// Add route to headend
-	if err := t.table.AddRoute4Tun(t.headend.To, t.iface_name); err != nil {
+	if err := t.table.AddRoute4Tun(ctx, t.headend.To, t.iface_name); err != nil {
 		return err
 	}
 	t.state = true
@@ -70,9 +70,9 @@ func (t *TaskNextMNHeadendWithCtrl) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *TaskNextMNHeadendWithCtrl) RunExit() error {
+func (t *TaskNextMNHeadendWithCtrl) RunExit(ctx context.Context) error {
 	// Remove route to endpoint
-	if err := t.table.DelRoute4Tun(t.headend.To, t.iface_name); err != nil {
+	if err := t.table.DelRoute4Tun(ctx, t.headend.To, t.iface_name); err != nil {
 		return err
 	}
 	t.state = false

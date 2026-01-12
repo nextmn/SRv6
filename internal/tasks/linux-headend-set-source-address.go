@@ -30,7 +30,7 @@ func NewTaskLinuxHeadendSetSourceAddress(name string, address netip.Addr) *TaskL
 
 // Init
 func (t *TaskLinuxHeadendSetSourceAddress) RunInit(ctx context.Context) error {
-	if err := iproute2.IPSrSetSourceAddress(t.address); err != nil {
+	if err := iproute2.IPSrSetSourceAddress(ctx, t.address); err != nil {
 		return err
 	}
 	t.state = true
@@ -38,9 +38,9 @@ func (t *TaskLinuxHeadendSetSourceAddress) RunInit(ctx context.Context) error {
 }
 
 // Exit
-func (t *TaskLinuxHeadendSetSourceAddress) RunExit() error {
+func (t *TaskLinuxHeadendSetSourceAddress) RunExit(ctx context.Context) error {
 	// :: resets to default behavior
-	if err := iproute2.IPSrSetSourceAddress(netip.MustParseAddr("::")); err != nil {
+	if err := iproute2.IPSrSetSourceAddress(ctx, netip.MustParseAddr("::")); err != nil {
 		return err
 	}
 	t.state = false

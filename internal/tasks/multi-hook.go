@@ -44,7 +44,7 @@ func (h *HookMulti) NameExit() string {
 // Init function
 func (h *HookMulti) RunInit(ctx context.Context) error {
 	if h.init != nil {
-		if err := h.init.Run(); err != nil {
+		if err := h.init.Run(ctx); err != nil {
 			return err
 		}
 		h.state = true
@@ -54,9 +54,9 @@ func (h *HookMulti) RunInit(ctx context.Context) error {
 }
 
 // Exit function
-func (h *HookMulti) RunExit() error {
+func (h *HookMulti) RunExit(ctx context.Context) error {
 	if h.exit != nil {
-		if err := h.exit.Run(); err != nil {
+		if err := h.exit.Run(ctx); err != nil {
 			return err
 		}
 		h.state = false

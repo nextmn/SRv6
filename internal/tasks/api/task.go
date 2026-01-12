@@ -13,6 +13,6 @@ type Task interface {
 	NameInit() string
 	NameExit() string
 	RunInit(ctx context.Context) error
-	RunExit() error
+	RunExit(ctx context.Context) error
 	State() bool // true when the initialized and not yet exited
 }

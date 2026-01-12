@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"time"
 
 	tasks_api "github.com/nextmn/srv6/internal/tasks/api"
 	"github.com/sirupsen/logrus"
@@ -67,7 +68,7 @@ func (r *Registry) RunInit(ctx context.Context) error {
 }
 
 // Run exit tasks
-func (r *Registry) RunExit() {
+func (r *Registry) RunExit(ctx context.Context) {
 	for _, cancel := range slices.Backward(r.cancelFuncs) {
 		cancel()
 	}
@@ -75,7 +76,7 @@ func (r *Registry) RunExit() {
 		if !t.State() {
 			continue
 		}
-		if err := t.RunExit(); err != nil {
+		if err := t.RunExit(ctx); err != nil {
 			logrus.WithError(err).WithFields(logrus.Fields{
 				"task-name":   t.NameExit(),
 				"task-status": "failure",
@@ -90,7 +91,11 @@ func (r *Registry) RunExit() {
 }
 
 func (r *Registry) Run(ctx context.Context) error {
-	defer r.RunExit()
+	defer func() {
+		ctxShutdown, cancel := context.WithTimeout(context.WithoutCancel(ctx), 1*time.Second)
+		defer cancel()
+		r.RunExit(ctxShutdown)
+	}()
 	if err := r.RunInit(ctx); err != nil {
 		return err
 	}

@@ -11,7 +11,7 @@ require (
 	github.com/nextmn/gopacket-gtp v0.0.8
 	github.com/nextmn/gopacket-srv6 v0.0.8
 	github.com/nextmn/json-api v0.1.0
-	github.com/nextmn/logrus-formatter v0.1.0
+	github.com/nextmn/logrus-formatter v0.2.0
 	github.com/nextmn/rfc9433 v0.0.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
@@ -46,8 +46,8 @@ require (
 	github.com/ugorji/go/codec v1.3.1 // indirect
 	go.uber.org/mock v0.6.0 // indirect
 	golang.org/x/arch v0.23.0 // indirect
-	golang.org/x/crypto v0.46.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/crypto v0.47.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.33.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
