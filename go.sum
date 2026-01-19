@@ -62,8 +62,8 @@ github.com/nextmn/gopacket-gtp v0.0.8 h1:NF3GRPSdDjmoTeyN584NwbJJJ3tHwPZysZE2ma/
 github.com/nextmn/gopacket-gtp v0.0.8/go.mod h1:94jLjLU04IOVTKBXUP09MXZCgmlizqmflU2ion1ht6E=
 github.com/nextmn/gopacket-srv6 v0.0.8 h1:oP4wuJ7dOiV/gWmX3zoFcdp2dKdSWLUaxH2fJ3TYAwA=
 github.com/nextmn/gopacket-srv6 v0.0.8/go.mod h1:2Tyuo9zsG0bP2IhC4tVRgPRuyUqOgrvEEH9seJSZTlU=
-github.com/nextmn/json-api v0.1.0 h1:TGuCZCKiScTYgk+C6Gxkf7c3mIGn+f+JdzSn9qJ8KOM=
-github.com/nextmn/json-api v0.1.0/go.mod h1:dO3PJtGGx4M9X0+nQEbw162WV96c4utB3ax6qVBQd3g=
+github.com/nextmn/json-api v0.1.1 h1:uTTfP8BUq23222TJylJmML9KmlDjN7msqX4Emx+DRlM=
+github.com/nextmn/json-api v0.1.1/go.mod h1:b42fn9zSrVutyfkQN3rtMHEc9Ll/ZhX3T0CczaQy/fc=
 github.com/nextmn/logrus-formatter v0.2.0 h1:uIohVfiR8+CiLBn/gbxExSutq57uZpBq7VBi3+vThKc=
 github.com/nextmn/logrus-formatter v0.2.0/go.mod h1:+G9FGh86JyAJBDenHuMOtz2d+Dwkg5fYAUDG5rJj76M=
 github.com/nextmn/rfc9433 v0.0.4 h1:bueCkRLDX8/Oy8FegWGC30d0+K1HchB+8eEQqnnuaI0=

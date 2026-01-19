@@ -10,7 +10,7 @@ require (
 	github.com/nextmn/cli-xdg v0.0.1
 	github.com/nextmn/gopacket-gtp v0.0.8
 	github.com/nextmn/gopacket-srv6 v0.0.8
-	github.com/nextmn/json-api v0.1.0
+	github.com/nextmn/json-api v0.1.1
 	github.com/nextmn/logrus-formatter v0.2.0
 	github.com/nextmn/rfc9433 v0.0.4
 	github.com/sirupsen/logrus v1.9.4
