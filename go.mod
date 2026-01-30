@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/gofrs/uuid/v5 v5.4.0
 	github.com/google/gopacket v1.1.19
-	github.com/lib/pq v1.11.0
+	github.com/lib/pq v1.11.1
 	github.com/nextmn/cli-xdg v0.0.1
 	github.com/nextmn/gopacket-gtp v0.0.8
 	github.com/nextmn/gopacket-srv6 v0.0.8
