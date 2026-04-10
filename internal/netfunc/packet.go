@@ -111,12 +111,13 @@ func (p *Packet) PopIPv6Headers() (gopacket.Layer, error) {
 	return nil, fmt.Errorf("nothing else than IPv6 Headers in the packet")
 }
 
-// Returns the first gopacket.Layer after IPv4/UDP/GTPU headers
+// Returns the first gopacket.Layer after IPv4/UDP/GTPU headers if there is a payload (else, returns nil)
+// Returns a non nil error if the packet is not a GTP4 packet
 func (p *Packet) PopGTP4Headers() (gopacket.Layer, error) {
 	if p.firstLayerType != layers.LayerTypeIPv4 {
 		return nil, fmt.Errorf("not an IPv4 packet")
 	}
-	if len(p.Layers()) < 4 {
+	if len(p.Layers()) < 3 { // GPT Echo message has no payload
 		return nil, fmt.Errorf("not a GTP4 packet: not enough layers")
 	}
 	if p.Layers()[1].LayerType() != layers.LayerTypeUDP {
@@ -124,6 +125,9 @@ func (p *Packet) PopGTP4Headers() (gopacket.Layer, error) {
 	}
 	if binary.BigEndian.Uint16(p.TransportLayer().TransportFlow().Dst().Raw()) != constants.GTPU_PORT_INT {
 		return nil, fmt.Errorf("no GTP-U layer")
+	}
+	if len(p.Layers()) < 4 {
+		return nil, nil
 	}
 	return p.Layers()[3], nil
 }
