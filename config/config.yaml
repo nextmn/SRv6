@@ -5,7 +5,7 @@
 #  post-exit-hook:
 
 control:
-  uri: "http://192.0.2.1"
+  uri: "http://192.0.2.1:8080"
   bind-addr: "192.0.2.1:8080"
 controller-uri: "http://192.0.2.2:8080"
 backbone-ip: "fd00::01"
