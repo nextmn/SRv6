@@ -6,9 +6,9 @@
 FROM golang:1.26.1 AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
-RUN go mod download && go mod verify
+RUN --mount=type=cache,target=/go/pkg/mod go mod download && go mod verify
 COPY . .
-RUN CGO_ENABLED=0 go build -o /usr/local/bin/srv6
+RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -o /usr/local/bin/srv6
 
 FROM alpine:3.23.3
 RUN apk add --no-cache iptables iproute2
@@ -17,6 +17,7 @@ COPY etc/iproute2/rt_tables.d/nextmn.conf /etc/iproute2/rt_tables.d/nextmn.conf
 COPY etc/iproute2/rt_protos.d/nextmn.conf /etc/iproute2/rt_protos.d/nextmn.conf
 # TODO: integrate the following as a configuration option
 COPY --chmod=+x <<EOF /usr/local/bin/remove-default-routes.sh
+#!/usr/bin/env sh
 ip -6 r del default
 ip -4 r del default
 EOF
