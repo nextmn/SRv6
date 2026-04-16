@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 // HookSingle
@@ -36,7 +37,17 @@ func (h SingleHook) Run(ctx context.Context) error {
 		return nil
 	}
 	cmd := exec.CommandContext(ctx, *h.command)
+	// XXX: We are executing arbitrary (used defined) command here!!
+	// We need to preserve environment variables because this is currently
+	// the indended way to pass arguments (for example an ip address) to the command.
+	// TODO: update the "hook" mechanism to use a reworked version of docker-setup instead
+	env := cmd.Environ()
 	cmd.Env = []string{}
+	for _, e := range env {
+		if !strings.HasPrefix("POSTGRES", e) { // filter some env variables that should not be used by routing scripts
+			cmd.Env = append(cmd.Env, e)
+		}
+	}
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error running %s: %w", cmd.Args[0], err)
 	}
