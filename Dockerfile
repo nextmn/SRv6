@@ -3,7 +3,7 @@
 # found in the LICENSE file.
 # SPDX-License-Identifier: MIT
 
-FROM golang:1.26.6 AS builder
+FROM golang:1.27.0 AS builder
 WORKDIR /src
 COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build -o /usr/local/bin/srv6

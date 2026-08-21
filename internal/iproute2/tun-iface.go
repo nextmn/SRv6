@@ -33,10 +33,8 @@ func NewTunIface(name string) *TunIface {
 func (t *TunIface) CreateAndUp(ctx context.Context) error {
 	config := water.Config{
 		DeviceType: water.TUN,
-		PlatformSpecificParams: water.PlatformSpecificParams{
-			Name:       t.name,
-			MultiQueue: true,
-		},
+		Name:       t.name,
+		MultiQueue: true,
 	}
 	iface, err := water.New(config)
 	if err != nil {

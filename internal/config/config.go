@@ -12,7 +12,7 @@ import (
 
 	"github.com/nextmn/json-api/jsonapi"
 	"github.com/nextmn/json-api/jsonapi/n4tosrv6"
-	"gopkg.in/yaml.v3"
+	"go.yaml.in/yaml/v3"
 )
 
 func ParseConf(file string) (*SRv6Config, error) {

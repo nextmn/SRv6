@@ -1,6 +1,6 @@
 module github.com/nextmn/srv6
 
-go 1.26.6
+go 1.27.0
 
 require (
 	github.com/gin-gonic/gin v1.12.0
@@ -16,7 +16,7 @@ require (
 	github.com/sirupsen/logrus v1.10.1
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 	github.com/urfave/cli/v3 v3.11.0
-	gopkg.in/yaml.v3 v3.0.1
+	go.yaml.in/yaml/v3 v3.0.5
 )
 
 require (

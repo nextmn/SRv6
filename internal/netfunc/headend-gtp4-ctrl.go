@@ -178,9 +178,7 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 		SourceRoutingIPs: segs,
 		Tag:              0, // not used
 		Flags:            0, // no flag defined
-		GopacketIpv6ExtensionBase: gopacket_srv6.GopacketIpv6ExtensionBase{
-			NextHeader: layers.IPProtocolIPv4,
-		},
+		NextHeader:       layers.IPProtocolIPv4,
 	}
 
 	// S05. Encapsulate the packet into a new IPv6 header

@@ -7,6 +7,7 @@ package config
 
 import (
 	"net"
+	"slices"
 	"strings"
 )
 
@@ -21,8 +22,8 @@ func (a *Bsid) ToIPRoute2() string {
 
 func (a *Bsid) ReverseSegmentsList() []net.IP {
 	res := []net.IP{}
-	for i := len(a.SegmentsList) - 1; i >= 0; i-- {
-		ip := net.ParseIP(a.SegmentsList[i])
+	for _, v := range slices.Backward(a.SegmentsList) {
+		ip := net.ParseIP(v)
 		res = append(res, ip)
 	}
 	return res
