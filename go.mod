@@ -11,7 +11,7 @@ require (
 	github.com/nextmn/gopacket-gtp v0.0.8
 	github.com/nextmn/gopacket-srv6 v0.0.8
 	github.com/nextmn/json-api v0.1.1
-	github.com/nextmn/logrus-formatter v0.2.3
+	github.com/nextmn/logrus-formatter v0.2.4
 	github.com/nextmn/rfc9433 v0.0.4
 	github.com/sirupsen/logrus v1.10.1
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
