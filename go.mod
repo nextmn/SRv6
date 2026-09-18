@@ -15,7 +15,7 @@ require (
 	github.com/nextmn/rfc9433 v0.0.4
 	github.com/sirupsen/logrus v1.10.2
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
-	github.com/urfave/cli/v3 v3.11.0
+	github.com/urfave/cli/v3 v3.12.0
 	go.yaml.in/yaml/v3 v3.0.5
 )
 
