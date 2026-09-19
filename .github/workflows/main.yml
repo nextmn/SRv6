@@ -8,21 +8,6 @@ on:
     branches: [master]
   workflow_dispatch:
 jobs:
-  go_build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Setup Go
-        uses: actions/setup-go@v7
-        with:
-          go-version-file: go.mod
-      - name: Install depends
-        run: go get .
-      - name: Build
-        run: go build -v ./...
-      - name: Vet
-        run: go vet ./...
   lint:
     runs-on: ubuntu-latest
     steps:

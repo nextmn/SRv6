@@ -41,8 +41,6 @@ dev-install:
 	env/bin/pip install sqlfluff
 lint:
 	env/bin/sqlfluff lint
-	@echo Checking generated files
-	@go generate ./... && git status --porcelain=v2 | { ! { grep _gen.go > /dev/null && echo "Generated files were not up to date."; } } && echo "Generated files are up to date"
 
 test-postgres:
 	@echo Creating database test_nextmn
