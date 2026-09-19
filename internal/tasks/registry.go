@@ -41,29 +41,27 @@ func (r *Registry) Register(task tasks_api.Task) {
 // Run init tasks
 func (r *Registry) RunInit(ctx context.Context) error {
 	for _, t := range r.Tasks {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-			if t.State() {
-				continue
-			}
-			taskCtx, cancel := context.WithCancel(ctx)
-			r.cancelFuncs = append(r.cancelFuncs, cancel)
-			if err := t.RunInit(taskCtx); err != nil {
-				logrus.WithError(err).WithFields(logrus.Fields{
-					"task-name":   t.NameInit(),
-					"task-status": "failure",
-				}).Error("Task runtime failure")
-				return fmt.Errorf("Run init failure")
-			}
-			logrus.WithFields(logrus.Fields{
-				"task-name":   t.NameInit(),
-				"task-status": "success",
-			}).Info("Task runtime success")
+		if err := ctx.Err(); err != nil {
+			return err
 		}
-		r.initializedTasks += 1
+		if t.State() {
+			continue
+		}
+		taskCtx, cancel := context.WithCancel(ctx)
+		r.cancelFuncs = append(r.cancelFuncs, cancel)
+		if err := t.RunInit(taskCtx); err != nil {
+			logrus.WithError(err).WithFields(logrus.Fields{
+				"task-name":   t.NameInit(),
+				"task-status": "failure",
+			}).Error("Task runtime failure")
+			return fmt.Errorf("Run init failure")
+		}
+		logrus.WithFields(logrus.Fields{
+			"task-name":   t.NameInit(),
+			"task-status": "success",
+		}).Info("Task runtime success")
 	}
+	r.initializedTasks += 1
 	return nil
 }
 

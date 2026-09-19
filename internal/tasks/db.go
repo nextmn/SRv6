@@ -124,10 +124,8 @@ func (db *DBTask) RunInit(ctx context.Context) error {
 		// blocks until success, timeout, or ctx.Done()
 		<-wait.Done()
 		// check if wait.Done() is a result of ctx.Done()
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
+		if err := ctx.Err(); err != nil {
+			return err
 		}
 	}
 	if !ok {

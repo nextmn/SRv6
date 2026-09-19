@@ -34,21 +34,19 @@ func (n *NetFunc) Run(ctx context.Context, tunIface *iproute2.TunIface) error {
 	}
 	// Read packets while no stop signal
 	for {
-		select {
-		case <-ctx.Done():
+		if err := ctx.Err(); err != nil {
 			// Stop signal received
 			return nil
-		default:
-			packet := make([]byte, mtu)
-			if nb, err := tunIface.Read(packet); err == nil {
-				go func(ctx context.Context, iface *iproute2.TunIface) {
-					if out, err := n.handler.Handle(ctx, packet[:nb]); err == nil {
-						iface.Write(out)
-					} else {
-						logrus.WithError(err).Debug("Packet dropped")
-					}
-				}(ctx, tunIface)
-			}
+		}
+		packet := make([]byte, mtu)
+		if nb, err := tunIface.Read(packet); err == nil {
+			go func(ctx context.Context, iface *iproute2.TunIface) {
+				if out, err := n.handler.Handle(ctx, packet[:nb]); err == nil {
+					iface.Write(out)
+				} else {
+					logrus.WithError(err).Debug("Packet dropped")
+				}
+			}(ctx, tunIface)
 		}
 	}
 }

@@ -250,86 +250,84 @@ func (db *Database) GetRules(ctx context.Context) (n4tosrv6.RuleMap, error) {
 			return m, nil
 		}
 		for rows.Next() {
-			select {
-			case <-ctx.Done():
+			if err := ctx.Err(); err != nil {
 				// avoid looping if no longer necessary
 				return n4tosrv6.RuleMap{}, ctx.Err()
-			default:
-				err := rows.Scan(&uuid, &type_uplink, &enabled, pq.Array(&action_srh), &action_source_gtp4, &match_ue_ip, pq.Array(&match_gnb_ip), &match_uplink_teid, &match_uplink_upf, &match_service_ip)
-				if err != nil {
-					return m, err
-				}
-				rule := n4tosrv6.Rule{
-					Enabled: enabled,
-					Match:   n4tosrv6.Match{},
-				}
-				if type_uplink {
-					rule.Type = "uplink"
-					rule.Match.Header = &n4tosrv6.GtpHeader{}
-					rule.Match.Header.OuterIpSrc = make([]netip.Prefix, 0)
-					for _, i := range match_gnb_ip {
-						p, err := netip.ParsePrefix(i)
-						if err != nil {
-							return n4tosrv6.RuleMap{}, err
-						}
-						rule.Match.Header.OuterIpSrc = append(rule.Match.Header.OuterIpSrc, p)
+			}
+			err := rows.Scan(&uuid, &type_uplink, &enabled, pq.Array(&action_srh), &action_source_gtp4, &match_ue_ip, pq.Array(&match_gnb_ip), &match_uplink_teid, &match_uplink_upf, &match_service_ip)
+			if err != nil {
+				return m, err
+			}
+			rule := n4tosrv6.Rule{
+				Enabled: enabled,
+				Match:   n4tosrv6.Match{},
+			}
+			if type_uplink {
+				rule.Type = "uplink"
+				rule.Match.Header = &n4tosrv6.GtpHeader{}
+				rule.Match.Header.OuterIpSrc = make([]netip.Prefix, 0)
+				for _, i := range match_gnb_ip {
+					p, err := netip.ParsePrefix(i)
+					if err != nil {
+						return n4tosrv6.RuleMap{}, err
 					}
-					if match_uplink_upf != nil && match_uplink_teid != nil {
-						addr, err := netip.ParseAddr(*match_uplink_upf)
-						if err != nil {
-							return n4tosrv6.RuleMap{}, err
-						}
-						rule.Match.Header.FTeid = jsonapi.Fteid{
-							Teid: *match_uplink_teid,
-							Addr: addr,
-						}
-					}
-					if match_service_ip != nil {
-						p, err := netip.ParsePrefix(*match_service_ip)
-						if err == nil && p.Bits() == 32 {
-							rule.Match.Payload = &n4tosrv6.Payload{
-								Dst: p.Addr(),
-							}
-						}
-					}
-				} else {
-					rule.Type = "downlink"
+					rule.Match.Header.OuterIpSrc = append(rule.Match.Header.OuterIpSrc, p)
 				}
-				p, err := netip.ParsePrefix(match_ue_ip)
-				if err == nil && p.Bits() == 32 {
-					if type_uplink {
-						a := p.Addr()
-						rule.Match.Header.InnerIpSrc = &a
-					} else {
+				if match_uplink_upf != nil && match_uplink_teid != nil {
+					addr, err := netip.ParseAddr(*match_uplink_upf)
+					if err != nil {
+						return n4tosrv6.RuleMap{}, err
+					}
+					rule.Match.Header.FTeid = jsonapi.Fteid{
+						Teid: *match_uplink_teid,
+						Addr: addr,
+					}
+				}
+				if match_service_ip != nil {
+					p, err := netip.ParsePrefix(*match_service_ip)
+					if err == nil && p.Bits() == 32 {
 						rule.Match.Payload = &n4tosrv6.Payload{
 							Dst: p.Addr(),
 						}
 					}
 				}
+			} else {
+				rule.Type = "downlink"
+			}
+			p, err := netip.ParsePrefix(match_ue_ip)
+			if err == nil && p.Bits() == 32 {
+				if type_uplink {
+					a := p.Addr()
+					rule.Match.Header.InnerIpSrc = &a
+				} else {
+					rule.Match.Payload = &n4tosrv6.Payload{
+						Dst: p.Addr(),
+					}
+				}
+			}
 
-				srh, err := n4tosrv6.NewSRH(action_srh)
+			srh, err := n4tosrv6.NewSRH(action_srh)
+			if err != nil {
+				return n4tosrv6.RuleMap{}, err
+			}
+
+			if action_source_gtp4 == nil {
+				rule.Action = n4tosrv6.Action{
+					SRH:        *srh,
+					SourceGtp4: nil,
+				}
+			} else {
+				source_gtp4, err := netip.ParseAddr(*action_source_gtp4)
 				if err != nil {
 					return n4tosrv6.RuleMap{}, err
 				}
 
-				if action_source_gtp4 == nil {
-					rule.Action = n4tosrv6.Action{
-						SRH:        *srh,
-						SourceGtp4: nil,
-					}
-				} else {
-					source_gtp4, err := netip.ParseAddr(*action_source_gtp4)
-					if err != nil {
-						return n4tosrv6.RuleMap{}, err
-					}
-
-					rule.Action = n4tosrv6.Action{
-						SRH:        *srh,
-						SourceGtp4: &source_gtp4,
-					}
+				rule.Action = n4tosrv6.Action{
+					SRH:        *srh,
+					SourceGtp4: &source_gtp4,
 				}
-				m[uuid] = rule
 			}
+			m[uuid] = rule
 		}
 		return m, nil
 
