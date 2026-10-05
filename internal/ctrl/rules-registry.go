@@ -6,6 +6,7 @@
 package ctrl
 
 import (
+	"encoding/json/v2"
 	"fmt"
 	"net/http"
 
@@ -14,7 +15,6 @@ import (
 	"github.com/nextmn/json-api/jsonapi"
 	"github.com/nextmn/json-api/jsonapi/n4tosrv6"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid/v5"
 	"github.com/sirupsen/logrus"
 )
@@ -30,156 +30,184 @@ func NewRulesRegistry(db *database.Database) *RulesRegistry {
 	}
 }
 
-func (rr *RulesRegistry) GetRule(c *gin.Context) {
-	id := c.Param("uuid")
+func (rr *RulesRegistry) GetRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	id := req.PathValue("uuid")
 	iduuid, err := uuid.FromString(id)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	rule, err := rr.db.GetRule(c, iduuid)
+	rule, err := rr.db.GetRule(req.Context(), iduuid)
 	if err != nil {
 		logrus.WithError(err).Error("Could not get rule from database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not get rule from database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not get rule from database", Error: err})
 		return
 	}
-	c.JSON(http.StatusOK, rule)
+	w.WriteHeader(http.StatusOK)
+	json.MarshalWrite(w, rule)
 }
 
-func (rr *RulesRegistry) GetRules(c *gin.Context) {
-	rules, err := rr.db.GetRules(c)
+func (rr *RulesRegistry) GetRules(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	rules, err := rr.db.GetRules(req.Context())
 	if err != nil {
 		logrus.WithError(err).Error("Could not get all rules from database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not get all rules from database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not get all rules from database", Error: err})
 		return
 	}
-	c.JSON(http.StatusOK, rules)
+	w.WriteHeader(http.StatusOK)
+	json.MarshalWrite(w, rules)
 }
 
-func (rr *RulesRegistry) DeleteRule(c *gin.Context) {
-	id := c.Param("uuid")
+func (rr *RulesRegistry) DeleteRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	id := req.PathValue("uuid")
 	iduuid, err := uuid.FromString(id)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	err = rr.db.DeleteRule(c, iduuid)
+	err = rr.db.DeleteRule(req.Context(), iduuid)
 	if err != nil {
 		logrus.WithError(err).Error("Could not delete rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not delete rule in the database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not delete rule in the database", Error: err})
 		return
 	}
-	c.Status(http.StatusNoContent) // successful deletion
+	w.WriteHeader(http.StatusNoContent)
 }
 
-func (rr *RulesRegistry) EnableRule(c *gin.Context) {
-	id := c.Param("uuid")
+func (rr *RulesRegistry) EnableRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	id := req.PathValue("uuid")
 	iduuid, err := uuid.FromString(id)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	err = rr.db.EnableRule(c, iduuid)
+	err = rr.db.EnableRule(req.Context(), iduuid)
 	if err != nil {
 		logrus.WithError(err).Error("Could not enable rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not enable rule in the database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not enable rule in the database", Error: err})
 		return
 		//TODO: check if rule not found
 	}
-	c.Status(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }
 
-func (rr *RulesRegistry) DisableRule(c *gin.Context) {
-	id := c.Param("uuid")
+func (rr *RulesRegistry) DisableRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	id := req.PathValue("uuid")
 	iduuid, err := uuid.FromString(id)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	err = rr.db.DisableRule(c, iduuid)
+	err = rr.db.DisableRule(req.Context(), iduuid)
 	if err != nil {
 		logrus.WithError(err).Error("Could not disable rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not disable rule in the database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not disable rule in the database", Error: err})
 		return
 		//TODO: check if rule not found
 	}
-	c.Status(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }
 
-func (rr *RulesRegistry) SwitchRule(c *gin.Context) {
-	idEnable := c.Param("enable_uuid")
-	idDisable := c.Param("disable_uuid")
+func (rr *RulesRegistry) SwitchRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	idEnable := req.PathValue("enable_uuid")
+	idDisable := req.PathValue("disable_uuid")
 	iduuidEnable, err := uuid.FromString(idEnable)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
 	iduuidDisable, err := uuid.FromString(idDisable)
 	if err != nil {
 		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	err = rr.db.SwitchRule(c, iduuidEnable, iduuidDisable)
+	err = rr.db.SwitchRule(req.Context(), iduuidEnable, iduuidDisable)
 	if err != nil {
 		logrus.WithError(err).Error("Could not Switch rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not switch rule in the database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not switch rule in the database", Error: err})
 		return
 		//TODO: check if rule not found
 	}
-	c.Status(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // Post a new rule
-func (rr *RulesRegistry) PostRule(c *gin.Context) {
+func (rr *RulesRegistry) PostRule(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
 	var rule n4tosrv6.Rule
-	if err := c.BindJSON(&rule); err != nil {
+	if err := json.UnmarshalRead(req.Body, &rule); err != nil {
 		logrus.WithError(err).Error("could not deserialize")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "could not deserialize", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not deserialize", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	id, err := rr.db.InsertRule(c, rule)
+	id, err := rr.db.InsertRule(req.Context(), rule)
 	if err != nil {
 		logrus.WithError(err).Error("Could not insert rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "failed to insert rule", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "failed to insert rule", Error: err})
 		return
 	}
-	c.Header("Location", fmt.Sprintf("/rules/%s", id))
-	c.JSON(http.StatusCreated, rule)
+	w.Header().Set("Location", fmt.Sprintf("/rules/%s", id))
+	w.WriteHeader(http.StatusCreated)
+	json.MarshalWrite(w, rule)
 }
 
 // Update action of a rule
-func (rr *RulesRegistry) UpdateAction(c *gin.Context) {
-	id_rule := c.Param("uuid")
+func (rr *RulesRegistry) UpdateAction(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	id_rule := req.PathValue("uuid")
 	iduuid_rule, err := uuid.FromString(id_rule)
 	if err != nil {
-		logrus.WithError(err).Error("Bad UUID")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "bad uuid", Error: err})
 		return
 	}
 	var action n4tosrv6.Action
-	if err := c.BindJSON(&action); err != nil {
+	if err := json.UnmarshalRead(req.Body, &action); err != nil {
 		logrus.WithError(err).Error("could not deserialize")
-		c.JSON(http.StatusBadRequest, jsonapi.MessageWithError{Message: "could not deserialize", Error: err})
+		w.WriteHeader(http.StatusBadRequest)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not deserialize", Error: err})
 		return
 	}
-	c.Header("Cache-Control", "no-cache")
-	err = rr.db.UpdateAction(c, iduuid_rule, action)
+	err = rr.db.UpdateAction(req.Context(), iduuid_rule, action)
 	if err != nil {
 		logrus.WithError(err).Error("Could not update Action for this rule in the database")
-		c.JSON(http.StatusInternalServerError, jsonapi.MessageWithError{Message: "could not update Action for this rule in the database", Error: err})
+		w.WriteHeader(http.StatusInternalServerError)
+		json.MarshalWrite(w, jsonapi.MessageWithError{Message: "could not update Action for this rule in the database", Error: err})
 		return
 	}
-	c.Status(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }

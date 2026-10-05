@@ -7,19 +7,19 @@ package tasks
 
 import (
 	"context"
+	"encoding/json/v2"
 	"fmt"
 	"net"
 	"net/http"
 	"net/netip"
 	"time"
 
+	"github.com/nextmn/json-api/healthcheck"
+	"github.com/nextmn/logrus-formatter/httplog"
 	app_api "github.com/nextmn/srv6/internal/app/api"
 	"github.com/nextmn/srv6/internal/ctrl"
 	ctrl_api "github.com/nextmn/srv6/internal/ctrl/api"
 
-	"github.com/nextmn/logrus-formatter/ginlogger"
-
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
@@ -56,23 +56,20 @@ func (t *HttpServerTask) RunInit(ctx context.Context) error {
 	}
 	rr := ctrl.NewRulesRegistry(db)
 	t.rulesRegistryHTTP = rr
-	gin.SetMode(gin.ReleaseMode)
-	r := ginlogger.Default()
-	r.GET("/status", func(c *gin.Context) {
-		c.Header("Cache-Control", "no-cache")
-		c.JSON(http.StatusOK, gin.H{"ready": true})
-	})
-	r.POST("/rules", t.rulesRegistryHTTP.PostRule)
-	r.GET("/rules/:uuid", t.rulesRegistryHTTP.GetRule)
-	r.GET("/rules", t.rulesRegistryHTTP.GetRules)
-	r.PATCH("/rules/:uuid/enable", t.rulesRegistryHTTP.EnableRule)
-	r.PATCH("/rules/:uuid/disable", t.rulesRegistryHTTP.DisableRule)
-	r.PATCH("/rules/switch/:enable_uuid/:disable_uuid", t.rulesRegistryHTTP.SwitchRule)
-	r.DELETE("/rules/:uuid", t.rulesRegistryHTTP.DeleteRule)
-	r.PATCH("/rules/:uuid/update-action", t.rulesRegistryHTTP.UpdateAction)
+	r := http.NewServeMux()
+	r.HandleFunc("GET /status", t.Status)
+	r.HandleFunc("POST /rules", t.rulesRegistryHTTP.PostRule)
+	r.HandleFunc("GET /rules/{uuid}", t.rulesRegistryHTTP.GetRule)
+	r.HandleFunc("GET /rules", t.rulesRegistryHTTP.GetRules)
+	r.HandleFunc("PATCH /rules/{uuid}/enable", t.rulesRegistryHTTP.EnableRule)
+	r.HandleFunc("PATCH /rules/{uuid}/disable", t.rulesRegistryHTTP.DisableRule)
+	r.HandleFunc("PATCH /rules/switch/{enable_uuid}/{disable_uuid}", t.rulesRegistryHTTP.SwitchRule)
+	r.HandleFunc("DELETE /rules/{uuid}", t.rulesRegistryHTTP.DeleteRule)
+	r.HandleFunc("PATCH /rules/{uuid}/update-action", t.rulesRegistryHTTP.UpdateAction)
+	logger := httplog.NewRequestLoggerMiddleware(r)
 	t.srv = &http.Server{
 		Addr:    t.httpAddr.String(),
-		Handler: r,
+		Handler: logger,
 	}
 
 	l, err := net.Listen("tcp", t.srv.Addr)
@@ -86,6 +83,16 @@ func (t *HttpServerTask) RunInit(ctx context.Context) error {
 	}(l)
 	t.state = true
 	return nil
+}
+
+func (t *HttpServerTask) Status(w http.ResponseWriter, req *http.Request) {
+	status := healthcheck.Status{
+		Ready: true,
+	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(http.StatusOK)
+	json.MarshalWrite(w, status)
 }
 
 // Exit

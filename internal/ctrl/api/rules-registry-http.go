@@ -6,16 +6,16 @@
 package ctrl_api
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type RulesRegistryHTTP interface {
-	GetRule(c *gin.Context)
-	GetRules(c *gin.Context)
-	DeleteRule(c *gin.Context)
-	EnableRule(c *gin.Context)
-	DisableRule(c *gin.Context)
-	SwitchRule(c *gin.Context)
-	PostRule(c *gin.Context)
-	UpdateAction(c *gin.Context)
+	GetRule(w http.ResponseWriter, r *http.Request)
+	GetRules(w http.ResponseWriter, r *http.Request)
+	DeleteRule(w http.ResponseWriter, r *http.Request)
+	EnableRule(w http.ResponseWriter, r *http.Request)
+	DisableRule(w http.ResponseWriter, r *http.Request)
+	SwitchRule(w http.ResponseWriter, r *http.Request)
+	PostRule(w http.ResponseWriter, r *http.Request)
+	UpdateAction(w http.ResponseWriter, r *http.Request)
 }
