@@ -131,7 +131,7 @@ func (h HeadendGTP4WithCtrl) Handle(ctx context.Context, packet []byte) ([]byte,
 		return nil, fmt.Errorf("GTP packet is not a G-PDU")
 	}
 	if payload == nil {
-		return nil, fmt.Errorf("Empty GTP payload")
+		return nil, fmt.Errorf("empty GTP payload")
 	}
 	// Check payload is IPv4
 	inner, ok := payload.(*layers.IPv4)

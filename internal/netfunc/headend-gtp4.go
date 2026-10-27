@@ -131,7 +131,7 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 		return nil, fmt.Errorf("GTP packet is not a G-PDU")
 	}
 	if payload == nil {
-		return nil, fmt.Errorf("Empty GTP payload")
+		return nil, fmt.Errorf("empty GTP payload")
 	}
 
 	// TODO: create a dedicated parser for GTPU extension Headers

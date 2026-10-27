@@ -98,9 +98,9 @@ func (t *HttpServerTask) Status(w http.ResponseWriter, req *http.Request) {
 // Exit
 func (t *HttpServerTask) RunExit(ctx context.Context) error {
 	t.state = false
-	ctx, cancel := context.WithTimeout(context.TODO(), 1*time.Second) // context.Background() is already Done()
+	ctxTimeout, cancel := context.WithTimeout(context.TODO(), 1*time.Second) // context.Background() is already Done()
 	defer cancel()
-	if err := t.srv.Shutdown(ctx); err != nil {
+	if err := t.srv.Shutdown(ctxTimeout); err != nil {
 		logrus.WithError(err).Info("HTTP Server Shutdown")
 	}
 	return nil
