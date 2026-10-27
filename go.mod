@@ -1,6 +1,6 @@
 module github.com/nextmn/srv6
 
-go 1.27.1
+go 1.27.3
 
 require (
 	github.com/gofrs/uuid/v5 v5.5.1
@@ -20,5 +20,5 @@ require (
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
-	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
 )

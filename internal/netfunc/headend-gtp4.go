@@ -226,9 +226,6 @@ func (h HeadendGTP4) Handle(ctx context.Context, packet []byte) ([]byte, error) 
 
 	srcPrefix := h.sourceAddressPrefix
 	ipv6SA := encoding.NewMGTP4IPv6Src(srcPrefix, [4]byte(ipv4SA), binary.BigEndian.Uint16(udpSP))
-	if err != nil {
-		return nil, fmt.Errorf("error during creation of IPv6 SA: %w", err)
-	}
 
 	src, err := ipv6SA.Marshal()
 	if err != nil {

@@ -329,8 +329,10 @@ func (db *Database) GetRules(ctx context.Context) (n4tosrv6.RuleMap, error) {
 			}
 			m[uuid] = rule
 		}
+		if err := rows.Err(); err != nil {
+			return n4tosrv6.RuleMap{}, err
+		}
 		return m, nil
-
 	}
 	return n4tosrv6.RuleMap{}, fmt.Errorf("procedure not registered")
 }

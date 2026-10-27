@@ -9,6 +9,6 @@ package iproute2
 
 import "github.com/songgao/water"
 
-func platformSpecificParams(name string) water.PlatformSpecificParams {
+func platformSpecificParams(_ string) water.PlatformSpecificParams {
 	return water.PlatformSpecificParams{}
 }
